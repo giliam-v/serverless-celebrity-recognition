@@ -9,8 +9,10 @@ Transform: AWS::Serverless-2016-10-31
 # Metadata:
 #   template metadata
 
-# Parameters:
-#   set of parameters
+Parameters:
+  S3BucketName:
+    Type: String
+
 
 # Mappings:
 #   set of mappings
@@ -21,7 +23,9 @@ Transform: AWS::Serverless-2016-10-31
 Resources:
   UploadBucket:
     Type: AWS::S3::Bucket
-    Properties: {}
+    # DeletionPolicy: Retain
+    Properties:
+      BucketName: !Ref S3BucketName
 
   PresignedUrlFunction:
     Type: AWS::Serverless::Function
@@ -47,7 +51,29 @@ Resources:
           Statement:
             - Effect: Allow
               Action: 's3:PutObject'
-              Resource: !Sub 'arn:aws:s3:::${UploadBucket}/*'
+              Resource: !Sub 'arn:aws:s3:::${S3BucketName}/*'
+  
+  ObjectProcessingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/objectprocessing
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+            Bucket: !Ref UploadBucket
+            Events: 's3:ObjectCreated:*'
+      Handler: index.handler
+      Runtime: python3.9
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: 's3:GetObject'
+              Resource: !Sub 'arn:aws:s3:::${S3BucketName}/*'
+            - Effect: Allow
+              Action: 'rekognition:RecognizeCelebrities'
+              Resource: '*'
 
 
 

@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import boto3
-from botocore.exceptions import ClientError
+# from botocore.exceptions import ClientError
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ def handler(event, context):
             ExpiresIn=3600
         )
 
-        logger.debug(f'Received pre-signed URL:\n{url}')
+        logger.debug(f'Generated pre-signed URL:\n{url}')
 
         return {
             "statusCode": 200,
