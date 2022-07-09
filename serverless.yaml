@@ -1,7 +1,10 @@
 Transform: AWS::Serverless-2016-10-31
 
-# Globals:
-#   set of globals
+Globals:
+  Function:
+    Runtime: python3.9
+    Handler: index.handler
+
 
 # Description:
 #   String
@@ -44,8 +47,6 @@ Resources:
               - method.request.querystring.filename:
                   Required: true
                   Caching: false
-      Handler: index.handler
-      Runtime: python3.9
       Policies:
         - Version: '2012-10-17'
           Statement:
@@ -66,8 +67,6 @@ Resources:
           Properties:
             Bucket: !Ref UploadBucket
             Events: 's3:ObjectCreated:*'
-      Handler: index.handler
-      Runtime: python3.9
       Policies:
         - Version: '2012-10-17'
           Statement:
