@@ -10,11 +10,10 @@ logger.setLevel(logging.DEBUG)
 
 
 def handler(event, context):
+    print('Processing...')
     logger.debug('Request event:\n%s', json.dumps(event, indent=2, default=str))
 
     try:
-        print('Processing...')
-
         bucket = os.environ.get('S3Bucket')
         object = event['queryStringParameters']['filename']
 

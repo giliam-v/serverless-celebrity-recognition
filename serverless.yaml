@@ -22,13 +22,13 @@ Parameters:
 
 Resources:
   UploadBucket:
-    Type: AWS::S3::Bucket
+    Type: 'AWS::S3::Bucket'
     # DeletionPolicy: Retain
     Properties:
       BucketName: !Ref S3BucketName
 
   PresignedUrlFunction:
-    Type: AWS::Serverless::Function
+    Type: 'AWS::Serverless::Function'
     Properties:
       CodeUri: lambda/presignedurl
       Environment:
@@ -54,9 +54,12 @@ Resources:
               Resource: !Sub 'arn:aws:s3:::${S3BucketName}/*'
   
   ObjectProcessingFunction:
-    Type: AWS::Serverless::Function
+    Type: 'AWS::Serverless::Function'
     Properties:
       CodeUri: lambda/objectprocessing
+      Environment:
+        Variables:
+          DDBTable: !Ref DDBTable
       Events:
         S3Event:
           Type: S3
@@ -74,7 +77,24 @@ Resources:
             - Effect: Allow
               Action: 'rekognition:RecognizeCelebrities'
               Resource: '*'
+            - Effect: Allow
+              Action: 'dynamodb:PutItem'
+              Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DDBTable}'
 
+  DDBTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: filename
+          AttributeType: S
+        - AttributeName: date
+          AttributeType: S
+      KeySchema:
+        - AttributeName: filename
+          KeyType: HASH
+        - AttributeName: date
+          KeyType: RANGE
 
 
 # Outputs:
