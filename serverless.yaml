@@ -1,0 +1,44 @@
+Transform: AWS::Serverless-2016-10-31
+
+# Globals:
+#   set of globals
+
+# Description:
+#   String
+
+# Metadata:
+#   template metadata
+
+# Parameters:
+#   set of parameters
+
+# Mappings:
+#   set of mappings
+
+# Conditions:
+#   set of conditions
+
+Resources:
+  UploadBucket:
+    Type: AWS::S3::Bucket
+    Properties: {}
+
+  PresignedUrlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/presignedurl
+      Environment:
+        Variables:
+          S3Bucket: !Ref UploadBucket
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: GET
+            Path: /presignedurl
+      Handler: index.handler
+      Runtime: python3.9
+
+
+# Outputs:
+#   set of outputs
