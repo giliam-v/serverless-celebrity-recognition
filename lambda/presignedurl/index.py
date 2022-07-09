@@ -13,16 +13,20 @@ def handler(event, context):
     logger.debug('Request event:\n%s', json.dumps(event, indent=2, default=str))
 
     try:
-        print('Hello')
-        bucket = os.environ.get('S3Bucket')
-        logger.info(f'Upload Bucket: {bucket}')
+        print('Processing...')
 
+        bucket = os.environ.get('S3Bucket')
+        object = event['queryStringParameters']['filename']
+
+        logger.info(f'Generating pre-signed URL for\n  Bucket: {bucket}\n  Object: {object}')
 
         url = boto3.client('s3').generate_presigned_url(
             ClientMethod='put_object', 
-            Params={'Bucket': bucket, 'Key': 'test'},
+            Params={'Bucket': bucket, 'Key': object},
             ExpiresIn=3600
         )
+
+        logger.debug(f'Received pre-signed URL:\n{url}')
 
         return {
             "statusCode": 200,
@@ -35,5 +39,5 @@ def handler(event, context):
         logger.error(str(e))
     
     finally:
-        print('Bye')
+        print('Bye!')
     

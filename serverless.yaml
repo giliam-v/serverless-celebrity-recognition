@@ -36,6 +36,10 @@ Resources:
           Properties:
             Method: GET
             Path: /presignedurl
+            RequestParameters:
+              - method.request.querystring.filename:
+                  Required: true
+                  Caching: false
       Handler: index.handler
       Runtime: python3.9
       Policies:
