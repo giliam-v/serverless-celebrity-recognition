@@ -18,9 +18,9 @@ def handler(event, context):
             filename = record['s3']['object']['key']
             date = record['eventTime']
             
-            celebrity = get_celebrity(bucket, filename)
+            celeb_names = get_celebrities(bucket, filename)
         
-            put_dynamodb_item(table, filename, date, celebrity)
+            put_dynamodb_item(table, bucket, filename, date, celeb_names)
     
     except Exception as e:
         logger.error(str(e))
@@ -29,7 +29,7 @@ def handler(event, context):
         print('Bye!')
 
 
-def get_celebrity(bucket, filename):
+def get_celebrities(bucket, filename):
     logger.info(f'Initiating celebrity recognition for S3 image: {bucket}/{filename}')
 
     response = boto3.client('rekognition').recognize_celebrities(
@@ -42,28 +42,26 @@ def get_celebrity(bucket, filename):
     )
     
     logger.debug('Result:\n%s', json.dumps(response, indent=2, default=str))
-    celebrities = response['CelebrityFaces']
 
-    if len(celebrities) == 0:
-        celebrity = 'unknown'
-        logger.info('No celebrities found. Setting name to "unknown"')
-    else:
-        # For simplicity of demo we only record the first celebrity found
-        celebrity = celebrities[0]['Name']
-        logger.info(f'Celebrity found: {celebrity}')
+    celeb_names = []
+    for celeb in response['CelebrityFaces']:
+        celeb_names.append(celeb['Name'])
 
-    return celebrity
+    logger.info(f'Identified celebrities: {celeb_names}')
+
+    return celeb_names
 
 
-def put_dynamodb_item(table, filename, date, celebrity):
+def put_dynamodb_item(table, bucket, filename, date, celeb_names):
     logger.info(f'Writing metadata to table: {table}')
 
     response = boto3.client('dynamodb').put_item(
         TableName=table,
         Item={
+            'bucket':{'S':bucket},
             'filename':{'S':filename},
             'date':{'S':date},
-            'celebrity':{'S':celebrity}
+            'celebrities':{'SS':celeb_names}
         }
     )
 

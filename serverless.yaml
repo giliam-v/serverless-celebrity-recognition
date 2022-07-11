@@ -30,10 +30,10 @@ Resources:
     Properties:
       BucketName: !Ref S3BucketName
 
-  PresignedUrlFunction:
+  GetPresignedUrlFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      CodeUri: lambda/presignedurl
+      CodeUri: lambda_functions/get_presigned_url
       Environment:
         Variables:
           S3Bucket: !Ref UploadBucket
@@ -42,11 +42,9 @@ Resources:
           Type: Api
           Properties:
             Method: GET
-            Path: /presignedurl
+            Path: /get-presinged-url
             RequestParameters:
-              - method.request.querystring.filename:
-                  Required: true
-                  Caching: false
+              - method.request.querystring.filename
       Policies:
         - Version: '2012-10-17'
           Statement:
@@ -54,10 +52,10 @@ Resources:
               Action: 's3:PutObject'
               Resource: !Sub 'arn:aws:s3:::${S3BucketName}/*'
   
-  ObjectProcessingFunction:
+  ProcessImageFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      CodeUri: lambda/objectprocessing
+      CodeUri: lambda_functions/process_image
       Environment:
         Variables:
           DDBTable: !Ref DDBTable
@@ -84,16 +82,53 @@ Resources:
     Type: 'AWS::DynamoDB::Table'
     Properties:
       BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: filename
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: bucket-date-index
+          KeySchema:
+            - AttributeName: bucket
+              KeyType: HASH
+            - AttributeName: date
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
       AttributeDefinitions:
         - AttributeName: filename
           AttributeType: S
         - AttributeName: date
           AttributeType: S
-      KeySchema:
-        - AttributeName: filename
-          KeyType: HASH
-        - AttributeName: date
-          KeyType: RANGE
+        - AttributeName: bucket
+          AttributeType: S
+
+    
+  ListImagesFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: lambda_functions/list_images
+      Environment:
+        Variables:
+          DDBTable: !Ref DDBTable
+          Bucket: !Ref UploadBucket
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: GET
+            Path: /images
+            RequestParameters:
+              - method.request.querystring.datetime
+              - method.request.querystring.limit
+              - method.request.querystring.token
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: 'dynamodb:Query'
+              Resource:
+                - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DDBTable}'
+                - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DDBTable}/*'
 
 
 # Outputs:
