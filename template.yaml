@@ -3,25 +3,14 @@ Transform: AWS::Serverless-2016-10-31
 Globals:
   Function:
     Runtime: python3.9
-    Handler: index.handler
 
 
 # Description:
 #   String
 
-# Metadata:
-#   template metadata
-
 Parameters:
   S3BucketName:
     Type: String
-
-
-# Mappings:
-#   set of mappings
-
-# Conditions:
-#   set of conditions
 
 Resources:
   UploadBucket:
@@ -34,6 +23,7 @@ Resources:
     Type: 'AWS::Serverless::Function'
     Properties:
       CodeUri: lambda_functions/get_presigned_url
+      Handler: get_presigned_url.handler
       Environment:
         Variables:
           S3Bucket: !Ref UploadBucket
@@ -56,6 +46,7 @@ Resources:
     Type: 'AWS::Serverless::Function'
     Properties:
       CodeUri: lambda_functions/process_image
+      Handler: process_image.handler
       Environment:
         Variables:
           DDBTable: !Ref DDBTable
@@ -107,6 +98,7 @@ Resources:
     Type: 'AWS::Serverless::Function'
     Properties:
       CodeUri: lambda_functions/list_images
+      Handler: list_images.handler
       Environment:
         Variables:
           DDBTable: !Ref DDBTable
@@ -134,6 +126,7 @@ Resources:
     Type: 'AWS::Serverless::Function'
     Properties:
       CodeUri: lambda_functions/describe_image
+      Handler: describe_image.handler
       Environment:
         Variables:
           DDBTable: !Ref DDBTable
