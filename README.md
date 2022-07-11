@@ -24,13 +24,13 @@ $ aws cloudformation deploy --template-file packaged.yaml --stack-name <StackNam
 ```
 
 ## Example
-### 1. Generate pre-singed URL and upload images
+### 1. Generate pre-signed URL and upload images
 After the stack is created, note the API Gateway stage address from the stack outputs. In this example we will pretend the address is `https://abcd1234.execute-api.eu-west-1.amazonaws.com/Prod`
 
 To get an upload pre-signed URL simply append **`/get-presigned-url`** endpoint path with **`?filename=<string>`** query string parameter to specify the file name:
 
 ```shell
-$ curl https://abcd1234.execute-api.eu-west-1.amazonaws.com/Prod/get-presinged-url?filename=image_01.jpg
+$ curl https://abcd1234.execute-api.eu-west-1.amazonaws.com/Prod/get-presigned-url?filename=image_01.jpg
 
 {"URL": "https://example-image-upload-api-bucket.s3.amazonaws.com/image_01.jpg?....long..string...."}
 ```

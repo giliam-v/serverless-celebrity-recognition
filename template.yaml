@@ -27,7 +27,7 @@ Resources:
           Type: Api
           Properties:
             Method: GET
-            Path: /get-presinged-url
+            Path: /get-presigned-url
             RequestParameters:
               - method.request.querystring.filename
       Policies:
