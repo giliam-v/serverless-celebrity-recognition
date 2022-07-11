@@ -129,6 +129,27 @@ Resources:
               Resource:
                 - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DDBTable}'
                 - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DDBTable}/*'
+  
+  DescribeImageFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: lambda_functions/describe_image
+      Environment:
+        Variables:
+          DDBTable: !Ref DDBTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: GET
+            Path: /images/{filename}
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: 'dynamodb:GetItem'
+              Resource:
+                - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DDBTable}'
 
 
 # Outputs:
