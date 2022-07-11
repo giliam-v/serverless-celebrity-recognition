@@ -4,10 +4,6 @@ Globals:
   Function:
     Runtime: python3.9
 
-
-# Description:
-#   String
-
 Parameters:
   S3BucketName:
     Type: String
@@ -15,7 +11,6 @@ Parameters:
 Resources:
   UploadBucket:
     Type: 'AWS::S3::Bucket'
-    # DeletionPolicy: Retain
     Properties:
       BucketName: !Ref S3BucketName
 
