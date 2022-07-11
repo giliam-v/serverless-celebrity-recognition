@@ -139,3 +139,4 @@ $ curl "https://abcd1234.execute-api.eu-west-1.amazonaws.com/Prod/images/image_0
 
 ## Notes
 * When uploading images to pre-signed URL, you may need to allow following redirects (-L option in curl) because S3 may initially respond with 307 redirect on requests to newly created buckets.
+* When cleaning up, make sure to first empty the S3 image upload bucket, otherwise the CloudFormation stack may fail to delete the bucket during stack termination.
