@@ -142,4 +142,4 @@ Resources:
 
 Outputs:
   ApiEndpoint:
-    Value: !Sub https://{ServerlessRestApi}.execute-api.{AWS::Region}.amazonaws.com/{ServerlessRestApi.Stage}
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${ServerlessRestApi.Stage}
