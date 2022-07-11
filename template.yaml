@@ -145,5 +145,6 @@ Resources:
                 - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DDBTable}'
 
 
-# Outputs:
-#   set of outputs
+Outputs:
+  API-Endpoint:
+    Value: !Sub https://{ServerlessRestApi}.execute-api.{AWS::Region}.amazonaws.com/{ServerlessRestApi.Stage}

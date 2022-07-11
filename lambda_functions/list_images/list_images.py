@@ -40,6 +40,7 @@ def handler(event, context):
     finally:
         print('Bye!')
 
+
 def list_images(table, bucket, **kwargs):
 
     query_params = {
@@ -90,10 +91,12 @@ def encode_token(last_key):
     base64_bytes = base64.b64encode(json_string.encode('utf-8'))
     return base64_bytes.decode()
 
+
 def decode_token(token):
     decoded_bytes = base64.b64decode(token)
     start_key = json.loads(decoded_bytes)
     return start_key
+
 
 def new_query_strings(old_query_strings, token):
     new_string = '?'
