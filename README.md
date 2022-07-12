@@ -23,7 +23,14 @@ $ aws cloudformation package --template-file template.yaml --s3-bucket <StagingB
 $ aws cloudformation deploy --template-file packaged.yaml --stack-name <StackName> --parameter-overrides S3BucketName=<ImageUploadBucketName> --capabilities CAPABILITY_IAM
 ```
 
-## Example
+| Parameter | Description |
+|-----------|-------------|
+|`<StackName>` | Name of the CloudFormation stack. |
+|`<StagingBucket>` | Name of existing S3 bucket where CloudFormation stages artifacts during deployment. |
+| `<ImageUploadBucket>` | Name of new bucket where uploaded image files will be stored. |
+
+
+## Example steps
 ### 1. Generate pre-signed URL and upload images
 After the stack is created, note the API Gateway stage address from the stack outputs. In this example we will pretend the address is `https://abcd1234.execute-api.eu-west-1.amazonaws.com/Prod`
 
