@@ -121,7 +121,7 @@ $ curl "https://abcd1234.execute-api.eu-west-1.amazonaws.com/Prod/images?datetim
 ```
 
 ### 3. Describe single image
-To get the metadata of a sinlge image file we perform a GET request to **`/images/{filename}`** where {filename} is the name of the image file:
+To get the metadata of a single image file we perform a GET request to **`/images/{filename}`** where {filename} is the name of the image file:
 ```shell
 $ curl "https://abcd1234.execute-api.eu-west-1.amazonaws.com/Prod/images/image_04.jpg"
 
